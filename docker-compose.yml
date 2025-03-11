@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  user-service:
+    build: ./user-service
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+    networks:
+      - app-network
+
+  task-service:
+    build: ./task-service
+    ports:
+      - "4000:4000"
+    depends_on:
+      - mongo
+    networks:
+      - app-network
+
+  frontend:
+    build: ./microservice-angular-app
+    ports:
+      - "80:80"
+    depends_on:
+      - user-service
+      - task-service
+    networks:
+      - app-network
+
+  mongo:
+    image: mongo:4.2
+    ports:
+      - "27017:27017"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
